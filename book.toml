@@ -1,8 +1,5 @@
 [book]
-title = "The Nebula programming language"
-authors = ["Oragan2"]
+title = "The Nebula Programming Language"
+authors = ["Oragan"]
 language = "en"
-src = "src"
-
-[output.html]
-additional-css = ["theme/nebula-highlight.css"]
+description = "What and how to use the Nebula language"
