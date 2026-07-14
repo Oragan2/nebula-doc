@@ -1,7 +1,0 @@
-.language-nebula .hljs-keyword {
-    color: #81a1c1; /* Beautiful ice blue for vaddr, paddr, ioport */
-    font-weight: bold;
-}
-.language-nebula .hljs-built_in {
-    color: #88c0d0; /* Soft cyan for writeX, readX, outX, inX */
-}

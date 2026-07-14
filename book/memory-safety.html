@@ -3,12 +3,12 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Memory Safety &amp; Layout - The Nebula programming language</title>
+        <title>Memory Safety &amp; Layout - The Nebula Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="">
+        <meta name="description" content="What and how to use the Nebula language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -28,7 +28,6 @@
         <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="theme/nebula-highlight-a5a4f0ed.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -36,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-967100b2.js";
+            window.path_to_searchindex_js = "searchindex-076b3cda.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-6f540286.js"></script>
@@ -138,7 +137,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">The Nebula programming language</h1>
+                    <h1 class="menu-title">The Nebula Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="print.html" title="Print this book" aria-label="Print this book">
@@ -176,6 +175,25 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="memory-safety--layout"><a class="header" href="#memory-safety--layout">Memory Safety &amp; Layout</a></h1>
+<p>Low-level systems programming shouldn’t mean sacrificing safety. Nebula introduces robust compile-time checks and smart memory organization to eliminate entire classes of critical bugs—such as dangling pointers, buffer overflows, and stack tampering—before your kernel even boots.</p>
+<h2 id="compile-time-scope-tracking-"><a class="header" href="#compile-time-scope-tracking-">Compile-Time scope tracking :</a></h2>
+<p>In C and C++, it is incredibly easy to accidentally store a pointer to a variable that has gone out of scope. When you later try to read or write to that pointer, you get undefined behavior, silent memory corruption, or a sudden crash.</p>
+<p>Nebula’s compiler strictly tracks the lifetime of every stack-allocated variable. If you attempt to access a pointer to a variable whose scope has ended, the compiler will refuse to build your code.</p>
+<pre><code class="language-nebula">int32* a;
+{
+    int32 b = 32;
+    a = &amp;b;
+    // ...
+}
+*a = 12; // Compilation error
+int32 c = *a; // Compilation error
+</code></pre>
+<h2 id="memory-layout-safeguards"><a class="header" href="#memory-layout-safeguards">Memory Layout Safeguards</a></h2>
+<p>To protect the stack and vital kernel structures from malicious exploits or accidental out-of-bounds writes, Nebula implements two distinct physical memory safety techniques under the hood:</p>
+<h3 id="1-variable-ordering"><a class="header" href="#1-variable-ordering">1. <a href="variable-ordering.html">Variable Ordering</a></a></h3>
+<p>Traditionally, compilers lay out stack variables in the order they were declared, or in whatever order the optimizer chooses. Nebula intelligently reorders variables in memory (for example, placing arrays and buffers above raw scalar variables) to drastically reduce the likelihood that a buffer overflow can overwrite adjacent, critical control data.</p>
+<h3 id="2-safety-bit"><a class="header" href="#2-safety-bit">2. <a href="safety-bits.html">Safety Bit</a></a></h3>
+<p>Nebula automatically injects lightweight compiler-managed checks—often called “safety bits” or “canaries”—at critical junctions in memory. If a buffer overflow or wild pointer write does occur, these safety bits can detect the corruption of the incoming variables and give an easy way for the developper to either halt CPU or a function to handle the possible corruption</p>
 
                     </main>
 
