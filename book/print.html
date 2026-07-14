@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-7c064e95.js";
+            window.path_to_searchindex_js = "searchindex-f18e2277.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-6f540286.js"></script>
@@ -271,6 +271,32 @@ uint64 h;
 2+2+2+2+8+8+8+8 = 40 bytes</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="safety-bits"><a class="header" href="#safety-bits">Safety Bits</a></h1>
+<p>To protect against memory corruption, the Nebula compiler automatically injects Safety Bits (canaries) at the boundary of every memory layout (such as globals, file scopes, and function stack frames).</p>
+<p>These safety bits are placed directly before your variables in memory. If a buffer overflow or wild write occurs, it will overwrite the safety bit first, allowing you to detect the corruption before trusting or executing sensitive operations.</p>
+<h2 id="how-they-work"><a class="header" href="#how-they-work">How they work:</a></h2>
+<p>For every memory scope, the compiler generates a random 64-bit unsigned value <code>uint64</code> at compile time and places it at the very start of that scope’s memory layout.</p>
+<p>To allow developers to verify memory integrity, the compiler automatically exposes two special variables:</p>
+<p><code>s{scope}Bits</code>: A pointer to the physical safety bit stored in memory.</p>
+<p><code>s{scope}Expected</code>: A compile-time const containing the original, correct random value.</p>
+<p>Because <code>s{scope}Bits</code> is a pointer, checking its value forces the CPU to read the actual, live state of that memory boundary. If the value pointed to does not match the expected constant, corruption has occurred.</p>
+<h2 id="how-they-can-be-used"><a class="header" href="#how-they-can-be-used">How they can be used:</a></h2>
+<p>Imagine a function that verifies if a user is an administrator before executing a high-privilege command:</p>
+<pre><code class="language-nebula">void executeAdminCommand(uint64 userID, Command cmd) {
+    if (users[userID].isAdmin)
+        executeCommand(cmd);
+}
+</code></pre>
+<p>If a buffer overflow occurs somewhere in the system, the memory storing the userID parameter, the users array, or the local stack frame could be modified, tricking the system into running a command with forged privileges.</p>
+<p>By checking the function and global safety bits first, you can guarantee memory integrity before running sensitive code:</p>
+<pre><code class="language-nebula">void executeAdminCommand(uint64 userID, Command cmd) {
+    if (*sFunctionBits != sFunctionExpected || *sUsersBits != sUsersExpected) {
+        showError("Safety bit changed, cannot guarantee proper verification of user rights");
+        return;
+    }
+    if (users[userID].isAdmin)
+        executeCommand(cmd);
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="types"><a class="header" href="#types">Types</a></h1>
 <p>The Nebula language supports the known types from all language to more dedicated type (see <a href="#low-level-types">LowLevelTypes</a> for more info) the types are as follow :</p>
