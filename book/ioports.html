@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-f18e2277.js";
+            window.path_to_searchindex_js = "searchindex-8845d7ae.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-6f540286.js"></script>
@@ -174,7 +174,20 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="ioport"><a class="header" href="#ioport">ioport</a></h1>
+                        <h1 id="io-ports"><a class="header" href="#io-ports">I/O ports</a></h1>
+<p>The ioport type maps directly to the x86 I/O port address space. This specialized namespace is used to communicate directly with legacy and core hardware peripherals, such as system timers, keyboard controllers, serial ports, and disk controllers.</p>
+<h2 id="technical-details"><a class="header" href="#technical-details">Technical Details:</a></h2>
+<h3 id="representation--size"><a class="header" href="#representation--size">Representation &amp; Size:</a></h3>
+<p>This types are compiled into unsigned 16 bits <code>uint16</code> variables, to match the 16 bit limits of the x86 address bus</p>
+<pre><code class="language-nebula">ioport@[const] COM1 = 0x3F8;
+</code></pre>
+<h3 id="type-casting-info"><a class="header" href="#type-casting-info">Type Casting Info:</a></h3>
+<p>Because ioport behaves exactly like a 16-bit unsigned integer under the hood, it can be cast to and from standard uint16 values. This is can be useful when calculating register offsets.</p>
+<pre><code class="language-nebula">ioport@[const] COM1 = 0x3F8;
+
+uint16 baseNumeric = uint16(COM1);
+ioport lineStatusReport = ioport(baseNumeric + 5);
+</code></pre>
 
                     </main>
 

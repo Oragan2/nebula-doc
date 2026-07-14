@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-f18e2277.js";
+            window.path_to_searchindex_js = "searchindex-8845d7ae.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-6f540286.js"></script>
@@ -318,11 +318,11 @@ In this chapter, we will explore these low-level types, unpacking their unique p
 <h2 id="in-this-chapter"><a class="header" href="#in-this-chapter">In this chapter:</a></h2>
 <ul>
 <li><a href="#address-types">Addresses</a>(vaddr &amp; paddr) – Safely separating virtual and physical memory.</li>
-<li><a href="#ioport">I/OPort</a> – Interacting directly with CPU peripheral buses.</li>
+<li><a href="#io-ports">I/OPort</a> – Interacting directly with CPU peripheral buses.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="address-types"><a class="header" href="#address-types">Address Types</a></h1>
-<p>These types are made to work and prevent mistake where a virtual address get mixed with a physical one</p>
+<p>These types were create to prevent mistake where a virtual address get mixed with a physical one</p>
 <h2 id="the-types"><a class="header" href="#the-types">The Types:</a></h2>
 <ul>
 <li><code>vaddr</code> - Virtual addresses.</li>
@@ -334,7 +334,7 @@ In this chapter, we will explore these low-level types, unpacking their unique p
 
 <h2 id="details"><a class="header" href="#details">Details:</a></h2>
 <h3 id="size-"><a class="header" href="#size-">Size :</a></h3>
-<p>These types are unsigned 64 bit ints variables when compiled</p>
+<p>These types are unsigned 64 bit <code>uint64</code> variables when compiled</p>
 <h3 id="casting-info-"><a class="header" href="#casting-info-">Casting info :</a></h3>
 <p>These types can be casted like normal unsigned 64 bit int, though casting one type to the other will cause a compiler warning</p>
 <h3 id="variants-"><a class="header" href="#variants-">Variants :</a></h3>
@@ -371,7 +371,20 @@ write(addr, 15); // compilation error
 <li>device -&gt; tells the cpu this is a device address to not make it change order</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="ioport"><a class="header" href="#ioport">ioport</a></h1>
+<h1 id="io-ports"><a class="header" href="#io-ports">I/O ports</a></h1>
+<p>The ioport type maps directly to the x86 I/O port address space. This specialized namespace is used to communicate directly with legacy and core hardware peripherals, such as system timers, keyboard controllers, serial ports, and disk controllers.</p>
+<h2 id="technical-details"><a class="header" href="#technical-details">Technical Details:</a></h2>
+<h3 id="representation--size"><a class="header" href="#representation--size">Representation &amp; Size:</a></h3>
+<p>This types are compiled into unsigned 16 bits <code>uint16</code> variables, to match the 16 bit limits of the x86 address bus</p>
+<pre><code class="language-nebula">ioport@[const] COM1 = 0x3F8;
+</code></pre>
+<h3 id="type-casting-info"><a class="header" href="#type-casting-info">Type Casting Info:</a></h3>
+<p>Because ioport behaves exactly like a 16-bit unsigned integer under the hood, it can be cast to and from standard uint16 values. This is can be useful when calculating register offsets.</p>
+<pre><code class="language-nebula">ioport@[const] COM1 = 0x3F8;
+
+uint16 baseNumeric = uint16(COM1);
+ioport lineStatusReport = ioport(baseNumeric + 5);
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="memory-access"><a class="header" href="#memory-access">Memory Access</a></h1>
 <div style="break-before: page; page-break-before: always;"></div>

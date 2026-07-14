@@ -1,6 +1,6 @@
 # Address Types
 
-These types are made to work and prevent mistake where a virtual address get mixed with a physical one
+These types were create to prevent mistake where a virtual address get mixed with a physical one
 
 ## The Types:
 * `vaddr` - Virtual addresses.
@@ -14,7 +14,7 @@ These types are made to work and prevent mistake where a virtual address get mix
 
 ### Size : 
 
-These types are unsigned 64 bit ints variables when compiled
+These types are unsigned 64 bit `uint64` variables when compiled
 
 ### Casting info : 
 
