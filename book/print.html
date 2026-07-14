@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-8845d7ae.js";
+            window.path_to_searchindex_js = "searchindex-4fa55379.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-6f540286.js"></script>
+        <script src="toc-e095334b.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -387,8 +387,29 @@ ioport lineStatusReport = ioport(baseNumeric + 5);
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="memory-access"><a class="header" href="#memory-access">Memory Access</a></h1>
+<p>In bare-metal systems programming, communicating with hardware and managing system resources requires direct access to physical memory, virtual memory, and I/O devices.</p>
+<p>Nebula splits hardware communication into two distinct pathways depending on how the target peripheral is wired to the CPU:</p>
+<h2 id="1-memory-mapped-access-vaddrpaddr"><a class="header" href="#1-memory-mapped-access-vaddrpaddr">1. Memory-Mapped Access (<code>vaddr</code>&amp;<code>paddr</code>)</a></h2>
+<p>Most modern hardware devices and system tables (like the ACPI tables, framebuffers, or APIC interrupt controllers) are mapped directly into the CPU’s standard memory address space.</p>
+<ul>
+<li>You access these using the specialized vaddr (virtual address) and paddr (physical address) types.</li>
+<li>Read and write operations on these addresses translate to standard assembly instructions (like mov).</li>
+</ul>
+<h2 id="2-port-mapped-access-ioport"><a class="header" href="#2-port-mapped-access-ioport">2. Port-Mapped Access (<code>ioport</code>)</a></h2>
+<p>Legacy and core motherboard peripherals (such as the system timer, keyboard controller, and serial ports) often reside in a completely separate, dedicated 16-bit address space.</p>
+<ul>
+<li>You access these using the specialized ioport type.</li>
+<li>These bypass standard memory operations entirely and require dedicated CPU instructions (such as in and out).</li>
+</ul>
+<h2 id="chapter-directory"><a class="header" href="#chapter-directory">Chapter Directory</a></h2>
+<ul>
+<li><a href="#volatile-intrinsics"><strong>Memory Operations</strong></a> this chapter will cover everything from what ways there is to access memory, how they work and how the compiler treats them</li>
+<li><a href="#io-operations"><strong>I/O operations</strong></a> this chapter will cover how the I/O operations are handled and how the compiler treats them</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="volatile-intrinsics"><a class="header" href="#volatile-intrinsics">Volatile Intrinsics</a></h1>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="io-operations"><a href="#io-operations" class="header">I/O Operations</a></h1>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="data-structures"><a class="header" href="#data-structures">Data Structures</a></h1>
 <div style="break-before: page; page-break-before: always;"></div>
